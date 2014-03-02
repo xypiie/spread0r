@@ -166,6 +166,7 @@ sub button_pause
 		$pause_button->set_label(" || ");
 	} else {
 		$pause = 1;
+		Glib::Source->remove($gtk_timer);
 		$pause_button->set_label(" |> ");
 	}
 	return TRUE;
@@ -212,7 +213,7 @@ sub set_text
 
 	# search for vowel from start to the mid of the word,
 	# this will be the focuspoint of the word
-	for ($i = 0; $i < $word_length / 2; ++$i) {
+	for ($i = $word_length * 0.2; $i < $word_length / 2; ++$i) {
 		if (substr($word, $i, 1) =~ /[aeuioöäü]/i) {
 			$prev_vowel = $i;
 		}
