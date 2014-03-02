@@ -75,7 +75,6 @@ sub limit_word_length
 	my $i = 0;
 	for ($i = 0; $i <= $#words_buffer; ++$i) {
 		my @tmp_buffer = ();
-		printf("word: $i = ".$words_buffer[$i]."\n");
 		@tmp_buffer = $hyphen->hyphenate($words_buffer[$i]);
 		# if hyphenate happened, replace original word by hyphen array
 		if ($#tmp_buffer > 0) {
@@ -83,7 +82,6 @@ sub limit_word_length
 			splice(@words_buffer, $i, 1, @tmp_buffer);
 		}
 	}
-	#printf ($foo->hyphenate('Schiffahrt')."\n");;
 }
 
 my @back_buffer;
@@ -121,7 +119,6 @@ sub get_next_word
 			}
 			$sentence_cnt++;
 			limit_word_length();
-			printf($line."\n");
 			unshift(@back_buffer, $line);
 			pop(@back_buffer) if ($#back_buffer > 10);
 		}
@@ -264,6 +261,7 @@ sub main
 	my $forward_button;
 	my $faster_button;
 	my $slower_button;
+	my $file_chooser;
 	my $vbox;
 	my $hbox;
 	my $file = "infile.txt";
@@ -289,14 +287,25 @@ sub main
 
 	pod2usage(1) if ($help);
 	pod2usage(-verbose => 2) if ($man);
-	pod2usage("$0: No file given.")  if (@ARGV == 0);
+
+
+	# open filechooser in case no file is given via commandline
+	if (@ARGV == 0) {
+		$file_chooser = Gtk2::FileChooserDialog->new(
+			"Open file", undef, "open", 'gtk-cancel' => 'cancel', 'gtk-ok' => 'ok');
+		if ($file_chooser->run()) {
+			$file = $file_chooser->get_filename();
+		}
+		$file_chooser->destroy();
+	} else {
+		$file = $ARGV[0];
+	}
 
 	# limit wpm
 	$wpm = 40 if ($wpm < 40);
 	$wpm = 1000 if ($wpm > 1000);
 
 	# open file
-	$file = $ARGV[0];
 	printf("opening file: $file\n");
 	open(FILE, "<:encoding(UTF-8)", $file) || die "can't open UTF-8 encoded filename: $!";
 
