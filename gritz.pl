@@ -29,6 +29,7 @@ my $span_black_open = "<span background='white' foreground='black' font_desc='".
 my $span_red_open = "<span background='white' foreground='red' font_desc='".$font."'><big>";
 my $span_close = "</big></span>";
 my $word_width = 28;
+my $gritz_version = "1";
 
 # globaly used gtk stuff
 my $gtk_text;
@@ -244,6 +245,7 @@ sub main
 	my $hbox;
 	my $file = "infile.txt";
 	my $length = 24;
+	my $version = 0;
 	my $help = 0;
 	my $man = 0;
 	my $word = "";
@@ -252,11 +254,18 @@ sub main
 	# handle arguments
 	GetOptions (	"wpm|w=i" => \$wpm,
 			"fastforward|f=i" => \$fast_forward,
+			"version|v" => \$version,
 			"help|h" => \$help,
 			"man|m" => \$man)
 		or die("Error in command line arguments\n");
-	pod2usage(1) if $help;
-	pod2usage(-verbose => 2) if $man;
+
+	if ($version) {
+		printf("$0 version $gritz_version\n");
+		return TRUE;
+	}
+
+	pod2usage(1) if ($help);
+	pod2usage(-verbose => 2) if ($man);
 	pod2usage("$0: No file given.")  if (@ARGV == 0);
 
 	# limit wpm
@@ -365,6 +374,7 @@ gritz [options] file
 
 	Options:
 	-h, --help			print brief help message
+	-v, --version			print version and quit
 	-m, --man			print the full documentation
 	-w <num>, --wpm <num>		reading speed in words per minute
 	-f <num>, --fastforward <num>	seek to <num>. sentence
@@ -377,6 +387,10 @@ gritz [options] file
 =item B<-h, --help>
 
 Print a brief help message and exits.
+
+=item B<-v, --version>
+
+Print version and exits.
 
 =item B<-m, --man>
 
