@@ -22,6 +22,8 @@ use Glib qw/TRUE FALSE/;
 use Gtk2 '-init';
 use Getopt::Long;
 use Pod::Usage;
+use lib 'lib/';
+use Hyphen;
 
 # defines
 my $font = "courier new 24";
@@ -44,6 +46,8 @@ my $pause = 1;
 my $back_ptr = -1;
 my $prev_back_ptr = -1;
 my $fast_forward = 0;
+my $hyphen = Text::Hyphen->new('min_word' => 17,
+	'min_prefix' => 8, 'min_suffix' => 8, 'min_part' => 7);
 
 
 ####################
@@ -66,6 +70,22 @@ sub get_line
 }
 
 my @words_buffer;
+sub limit_word_length
+{
+	my $i = 0;
+	for ($i = 0; $i <= $#words_buffer; ++$i) {
+		my @tmp_buffer = ();
+		printf("word: $i = ".$words_buffer[$i]."\n");
+		@tmp_buffer = $hyphen->hyphenate($words_buffer[$i]);
+		# if hyphenate happened, replace original word by hyphen array
+		if ($#tmp_buffer > 0) {
+			$tmp_buffer[$_] .= "-" foreach (0 .. $#tmp_buffer - 1);
+			splice(@words_buffer, $i, 1, @tmp_buffer);
+		}
+	}
+	#printf ($foo->hyphenate('Schiffahrt')."\n");;
+}
+
 my @back_buffer;
 my $sentence_cnt = 0;
 sub get_next_word
@@ -100,6 +120,8 @@ sub get_next_word
 				@words_buffer = split(' ', $line);
 			}
 			$sentence_cnt++;
+			limit_word_length();
+			printf($line."\n");
 			unshift(@back_buffer, $line);
 			pop(@back_buffer) if ($#back_buffer > 10);
 		}
@@ -108,6 +130,7 @@ sub get_next_word
 		# line into @words_buffer
 		if ($#words_buffer < 0) {
 			@words_buffer = split(' ', $back_buffer[$back_ptr]);
+			limit_word_length();
 		}
 		# if @words_buffer empty, proceed with next line
 		$back_ptr-- if ($#words_buffer <= 0);
@@ -187,8 +210,8 @@ sub set_text
 	$next_shot += $timeout / 2 if ($word_length > 10);
 	$next_shot += $timeout / 2 if ($word_length > 14);
 	$next_shot += $timeout / 2 if ($word_length > 18);
-	$next_shot += $timeout * 1.5 if ($word =~ /.*[\.!?;]$/);
 	$next_shot += $timeout / 2 if ($word =~ /.*,$/);
+	$next_shot += $timeout * 1.5 if ($word =~ /.*[\.!\?;]«?$/);
 
 	# search for vowel from start to the mid of the word,
 	# this will be the focuspoint of the word
@@ -353,7 +376,6 @@ sub main
 
 	return TRUE;
 }
-
 
 main();
 
