@@ -31,7 +31,7 @@ my $span_black_open = "<span background='white' foreground='black' font_desc='".
 my $span_red_open = "<span background='white' foreground='red' font_desc='".$font."'><big>";
 my $span_close = "</big></span>";
 my $word_width = 28;
-my $gritz_version = "2";
+my $gritz_version = "1.0";
 
 # globaly used gtk stuff
 my $gtk_text;
