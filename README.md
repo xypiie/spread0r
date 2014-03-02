@@ -59,6 +59,23 @@ The following steps are copied from [this tutorial](http://foobaring.blogspot.de
   * run `ppm install Gtk2 --force`
 
 
-Converting .epub ebooks
-=======================
-TODO
+Converting ebooks
+=================
+
+Ebook-tools
+-----------
+Using [ebook-tools](http://sourceforge.net/projects/ebook-tools/) and
+[html2text](http://www.mbayer.de/html2text) you can
+convert your .epubs (or any other format supported by ebook-tools) into a .txt
+file using this command:
+`einfo -p input_book.epub | html2text | sed -r "s/<[^>]+>//g" > blackout.txt`
+
+Calibre
+-------
+Using [Calibre](http://calibre-ebook.com/download) you can convert your .epubs
+(or any other format supported by calibre) into a .txt file, which can be used
+by gritz.  To do this, you've got two options:
+1. use the calibre GUI 
+2. use the commandline tool "ebook-convert" of calibre installation
+  * Open a terminal
+  * run `ebook-convert input_ebook.epub output_ebook.txt`
