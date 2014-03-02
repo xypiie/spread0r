@@ -31,7 +31,7 @@ my $span_black_open = "<span background='white' foreground='black' font_desc='".
 my $span_red_open = "<span background='white' foreground='red' font_desc='".$font."'><big>";
 my $span_close = "</big></span>";
 my $word_width = 28;
-my $gritz_version = "1";
+my $gritz_version = "2";
 
 # globaly used gtk stuff
 my $gtk_text;
@@ -67,6 +67,17 @@ sub get_line
 	$line =~ s/[\n\r]/ /g;
 
 	return $line;
+}
+
+sub escape {
+	my($data) = @_;
+
+	$data =~ s/&/&amp;/sg;
+	$data =~ s/</&lt;/sg;
+	$data =~ s/>/&gt;/sg;
+	$data =~ s/"/&quot;/sg;
+
+	return $data;
 }
 
 my @words_buffer;
@@ -229,9 +240,9 @@ sub set_text
 		$word_start .= " ";
 	}
 
-	$word_start .= substr($word, 0, $prev_vowel);
-	$word_mid = substr($word, $prev_vowel , 1);
-	$word_end = substr($word, $prev_vowel + 1);
+	$word_start .= escape(substr($word, 0, $prev_vowel));
+	$word_mid = escape(substr($word, $prev_vowel , 1));
+	$word_end = escape(substr($word, $prev_vowel + 1));
 	$add_to_end = $word_width / 2  - length($word_end);
 
 	# fill the string to fit $word_width
@@ -240,6 +251,7 @@ sub set_text
 	}
 	$word = $span_black_open.$word_start.$span_close.$span_red_open.$word_mid.$span_close.$span_black_open.$word_end.$span_close;
 
+	# printf("$word\n");
 	$gtk_text->set_markup($word);
 
 	# set new timer / disable in case of pause
