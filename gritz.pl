@@ -46,8 +46,8 @@ my $pause = 1;
 my $back_ptr = -1;
 my $prev_back_ptr = -1;
 my $fast_forward = 0;
-my $hyphen = Text::Hyphen->new('min_word' => 17,
-	'min_prefix' => 8, 'min_suffix' => 8, 'min_part' => 7);
+my $hyphen = Text::Hyphen->new('min_word' => 15,
+	'min_prefix' => 7, 'min_suffix' => 7, 'min_part' => 6);
 
 
 ####################
@@ -216,9 +216,7 @@ sub set_text
 
 	
 	# calculate timeout for next run
-	$next_shot += $timeout / 2 if ($word_length > 10);
-	$next_shot += $timeout / 2 if ($word_length > 14);
-	$next_shot += $timeout / 2 if ($word_length > 18);
+	$next_shot += ($timeout / 4 ) * ($word_length - 6) if ($word_length > 6);
 	$next_shot += $timeout / 2 if ($word =~ /.*,$/);
 	$next_shot += $timeout * 1.5 if ($word =~ /.*[\.!\?;]«?$/);
 
@@ -387,7 +385,7 @@ sub main
 	$vbox = Gtk2::VBox->new(FALSE, 10);
 	$vbox->pack_start($hbox,FALSE,FALSE,4);
 	$vbox->pack_start(Gtk2::HSeparator->new(),FALSE,FALSE,4);
-	$vbox->pack_start($gtk_text, FALSE, TRUE, 5);
+	$vbox->pack_start($gtk_text, TRUE, TRUE, 5);
 	$vbox->pack_start(Gtk2::HSeparator->new(),FALSE,FALSE,4);
 	$vbox->pack_start($quit_button, FALSE, FALSE, 0);
 	$window->add($vbox);
