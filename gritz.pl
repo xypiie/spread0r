@@ -213,12 +213,19 @@ sub set_text
 	my $prev_vowel = -1;
 	my $i = 0;
 	my $add_to_end = 0;
-
+	my $uppercase = 0;
 	
 	# calculate timeout for next run
 	$next_shot += ($timeout / 4 ) * ($word_length - 6) if ($word_length > 6);
 	$next_shot += $timeout / 2 if ($word =~ /.*,$/);
 	$next_shot += $timeout * 1.5 if ($word =~ /.*[\.!\?;]«?$/);
+
+	# find abbreviations, count uppercase letters
+	# http://stackoverflow.com/questions/6652757/count-uppercase-letters-in-string-using-perl
+	$uppercase = () = $word =~ m/\p{Uppercase}/g;
+	if ($uppercase  > 2) {
+		$next_shot *= $uppercase;
+	}
 
 	# search for vowel from start to the mid of the word,
 	# this will be the focuspoint of the word
