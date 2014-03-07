@@ -1,20 +1,20 @@
-gritz
-=====
+spread0r
+========
 
-gritz is a txt reader, which makes you reading twice as fast as usual
+spread0r is a txt reader, which makes you reading twice as fast as usual
 
 
 Installation
 ============
 
-gritz should run on all platforms supporting perl and gtk2-perl. 
+spread0r should run on all platforms supporting perl and gtk2-perl. 
 Just clone into the github repo or download a snapshot of:
-[gritz github repo](https://github.com/xypiie/gritz)
+[spread0r github repo](https://github.com/xypiie/spread0r)
 
 After installing perl and gtk2-perl you can start it by double clicking
-gritz.pl or running it in terminal like:
+spread0r.pl or running it in terminal like:
 
-`./gritz.pl`
+`./spread0r.pl`
 
 Dependencies on ArchLinux
 -------------------------
@@ -41,7 +41,7 @@ Dependencies on OSX
   * perl> install Cairo
   * perl> install Pango
   * perl> install Gtk2
-3. have fun with gritz
+3. have fun with spread0r
 
 Dependencies on Windows
 -----------------------
@@ -74,7 +74,7 @@ Calibre
 -------
 Using [Calibre](http://calibre-ebook.com/download) you can convert your .epubs
 (or any other format supported by calibre) into a .txt file, which can be used
-by gritz.  To do this, you've got two options:
+by spread0r.  To do this, you've got two options:
 1. use the calibre GUI 
 2. use the commandline tool "ebook-convert" of calibre installation
   * Open a terminal

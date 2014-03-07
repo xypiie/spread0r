@@ -31,7 +31,7 @@ my $span_black_open = "<span background='white' foreground='black' font_desc='".
 my $span_red_open = "<span background='white' foreground='red' font_desc='".$font."'><big>";
 my $span_close = "</big></span>";
 my $word_width = 28;
-my $gritz_version = "1.0";
+my $spread0r_version = "1.0";
 
 # globaly used gtk stuff
 my $gtk_text;
@@ -129,7 +129,7 @@ sub get_next_word
 				@words_buffer = split(' ', $line);
 			}
 			$sentence_cnt++;
-			limit_word_length();
+			#limit_word_length();
 			unshift(@back_buffer, $line);
 			pop(@back_buffer) if ($#back_buffer > 10);
 		}
@@ -138,7 +138,7 @@ sub get_next_word
 		# line into @words_buffer
 		if ($#words_buffer < 0) {
 			@words_buffer = split(' ', $back_buffer[$back_ptr]);
-			limit_word_length();
+			#limit_word_length();
 		}
 		# if @words_buffer empty, proceed with next line
 		$back_ptr-- if ($#words_buffer <= 0);
@@ -216,7 +216,7 @@ sub set_text
 
 	
 	# calculate timeout for next run
-	$next_shot += ($timeout / 4 ) * ($word_length - 6) if ($word_length > 6);
+	$next_shot += ($timeout / 5 ) * ($word_length - 6) if ($word_length > 6);
 	$next_shot += $timeout / 2 if ($word =~ /.*,$/);
 	$next_shot += $timeout * 1.5 if ($word =~ /.*[\.!\?;]«?$/);
 
@@ -292,7 +292,7 @@ sub main
 		or die("Error in command line arguments\n");
 
 	if ($version) {
-		printf("$0 version $gritz_version\n");
+		printf("$0 version $spread0r_version\n");
 		return TRUE;
 	}
 
@@ -408,11 +408,11 @@ __END__
 
 =head1 NAME
 
-gritz - high performance txt reader
+spread0r - high performance txt reader
 
 =head1 SYNOPSIS
 
-gritz [options] file
+spread0r [options] file
 
 	Options:
 	-h, --help			print brief help message
@@ -451,7 +451,7 @@ Skip all sentences until it reaches given sentence
 
 =head1 DESCRIPTION
 
-B<gritz> will read the given utf8 encoded input file and present
+B<spread0r> will read the given utf8 encoded input file and present
 it to you word by word, so you can read the text without manually
 refocusing.  This can double your reading speed!
 
