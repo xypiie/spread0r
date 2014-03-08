@@ -1,7 +1,7 @@
 spread0r
 ========
 
-spread0r is a txt reader, which makes you reading twice as fast as usual
+spread0r is a txt reader, which makes your reading twice as fast as usual
 
 
 Installation
