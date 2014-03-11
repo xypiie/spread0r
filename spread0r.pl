@@ -28,7 +28,7 @@ use Hyphen;
 # defines
 my $font = "courier new 24";
 my $span_black_open = "<span background='white' foreground='black' font_desc='".$font."'><big>";
-my $span_blue_open = "<span background='white' foreground='blue' font_desc='".$font."'><big>";
+my $span_red_open = "<span background='white' foreground='red' font_desc='".$font."'><big>";
 my $span_close = "</big></span>";
 my $word_width = 28;
 my $spread0r_version = "1.0";
@@ -249,7 +249,7 @@ sub set_text
 	for ($i = 0; $i < $add_to_end ; ++$i) {
 		$word_end .= " ";
 	}
-	$word = $span_black_open.$word_start.$span_close.$span_blue_open.$word_mid.$span_close.$span_black_open.$word_end.$span_close;
+	$word = $span_black_open.$word_start.$span_close.$span_red_open.$word_mid.$span_close.$span_black_open.$word_end.$span_close;
 
 	# printf("$word\n");
 	$gtk_text->set_markup($word);
