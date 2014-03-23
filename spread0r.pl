@@ -28,7 +28,7 @@ use Hyphen;
 # defines
 my $font = "courier new 24";
 my $span_black_open = "<span background='white' foreground='black' font_desc='".$font."'><big>";
-my $span_blue_open = "<span background='white' foreground='blue' font_desc='".$font."'><big>";
+my $span_blue_open = "<span background='white' foreground='red' font_desc='".$font."'><big>";
 my $span_close = "</big></span>";
 my $word_width = 28;
 my $spread0r_version = "1.0";
@@ -38,9 +38,10 @@ my $gtk_text;
 my $gtk_speed_label;
 my $gtk_sentence_text;
 my $gtk_timer;
+my $gtk_time_estimate;
 
 # global variables
-my $wpm = 200;
+my $wpm = 230;
 my $pause_button;
 my $pause = 1;
 my $back_ptr = -1;
@@ -48,6 +49,9 @@ my $prev_back_ptr = -1;
 my $fast_forward = 0;
 my $hyphen = Text::Hyphen->new('min_word' => 15,
 	'min_prefix' => 7, 'min_suffix' => 7, 'min_part' => 6);
+my $total_time;
+my $word_count;
+my $all_text;
 
 
 ####################
@@ -147,6 +151,15 @@ sub get_next_word
 	return shift(@words_buffer);
 }
 
+sub time_estimate {
+	$total_time = $word_count / $wpm;
+	if ($total_time < 60) {
+		$total_time = sprintf('%2.2f', $total_time) . " minutes";
+	} else {
+		$total_time = (sprintf('%2.2f', $total_time) / 60) . " hours";
+	}
+}
+
 #################
 # GTK callbacks #
 #################
@@ -187,6 +200,8 @@ sub button_slower
 {
 	$wpm -= 10 if ($wpm > 40);
 	$gtk_speed_label->set_markup("WPM: $wpm");
+	time_estimate();
+	$gtk_time_estimate->set_markup("$total_time");
 	return TRUE;
 }
 
@@ -194,6 +209,8 @@ sub button_faster
 {
 	$wpm += 10 if($wpm < 1000);
 	$gtk_speed_label->set_markup("WPM: $wpm");
+	time_estimate();	
+	$gtk_time_estimate->set_markup("$total_time");
 	return TRUE;
 }
 
@@ -218,12 +235,12 @@ sub set_text
 	# calculate timeout for next run
 	$next_shot += ($timeout / 5 ) * ($word_length - 6) if ($word_length > 6);
 	$next_shot += $timeout / 2 if ($word =~ /.*,$/);
-	$next_shot += $timeout * 1.5 if ($word =~ /.*[\.!\?;]«?$/);
+	$next_shot += $timeout * 1.5 if ($word =~ /.*[\.!\?;]Â«?$/);
 
 	# search for vowel from start to the mid of the word,
 	# this will be the focuspoint of the word
 	for ($i = $word_length * 0.2; $i < $word_length / 2; ++$i) {
-		if (substr($word, $i, 1) =~ /[aeuioöäü]/i) {
+		if (substr($word, $i, 1) =~ /[aeuioÃ¶Ã¤Ã¼]/i) {
 			$prev_vowel = $i;
 		}
 	}
@@ -316,13 +333,22 @@ sub main
 	$wpm = 40 if ($wpm < 40);
 	$wpm = 1000 if ($wpm > 1000);
 
+	# open file just to count total words
+	open(ALLTEXT, "<:encoding(UTF-8)", $file) || die "can't open UTF-8 encoded filename: $!";	
+	$/ = undef;
+	$all_text = <ALLTEXT>;
+	$/ = "\n";
+	$word_count = split(/\s+/, $all_text);	#get amount of words in file
+	close ALLTEXT;
+
 	# open file
 	printf("opening file: $file\n");
 	open(FILE, "<:encoding(UTF-8)", $file) || die "can't open UTF-8 encoded filename: $!";
 
 	printf("using words per minute = $wpm\n");
 
-	
+	time_estimate();
+
 	# set up window and quit callbacks
 	$window = Gtk2::Window->new;
 	$window->signal_connect(delete_event => \&button_quit);
@@ -369,6 +395,9 @@ sub main
 	$gtk_sentence_text = Gtk2::Label->new();
 	$gtk_sentence_text->set_markup("sentence nr: ");
 
+	$gtk_time_estimate = Gtk2::Label->new();
+	$gtk_time_estimate->set_markup("$total_time");
+
 	# horizontal box for the control buttons
 	$hbox = Gtk2::HBox->new(FALSE, 10);
 	$hbox->pack_start($pause_button, FALSE, FALSE, 0);
@@ -380,6 +409,8 @@ sub main
 	$hbox->pack_start($gtk_speed_label, FALSE, FALSE, 0);
 	$hbox->pack_start(Gtk2::VSeparator->new(), FALSE, FALSE, 4);
 	$hbox->pack_start($gtk_sentence_text, FALSE, FALSE, 0);
+	$hbox->pack_start(Gtk2::VSeparator->new(), FALSE, FALSE, 4);
+	$hbox->pack_start($gtk_time_estimate, FALSE, FALSE, 0);
 
 	# vertical box for the rest
 	$vbox = Gtk2::VBox->new(FALSE, 10);
