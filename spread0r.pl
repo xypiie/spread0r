@@ -28,7 +28,7 @@ use Hyphen;
 # defines
 my $font = "courier new 24";
 my $span_black_open = "<span background='white' foreground='black' font_desc='".$font."'><big>";
-my $span_blue_open = "<span background='white' foreground='red' font_desc='".$font."'><big>";
+my $span_blue_open = "<span background='white' foreground='blue' font_desc='".$font."'><big>";
 my $span_close = "</big></span>";
 my $word_width = 28;
 my $spread0r_version = "1.0";
@@ -41,7 +41,7 @@ my $gtk_timer;
 my $gtk_time_estimate;
 
 # global variables
-my $wpm = 230;
+my $wpm = 200;
 my $pause_button;
 my $pause = 1;
 my $back_ptr = -1;
