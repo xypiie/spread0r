@@ -20,6 +20,10 @@ Dependencies on ArchLinux
 -------------------------
 `pacman -S gtk2-perl`
 
+Dependencies on Fedora
+-------------------------
+`yum install perl-Gtk2`
+
 Dependencies on OSX
 -------------------
 ### Preparation:
