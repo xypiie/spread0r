@@ -65,6 +65,10 @@ sub get_line
 		exit(-1);
 	}
 	$line =~ s/[\n\r]/ /g;
+	$line =~ s/« /«@®/g;
+	$line =~ s/ »/@®»/g;
+	$line =~ s/ \?/@®\?/g;
+	$line =~ s/ !/@®!/g;
 
 	return $line;
 }
@@ -204,6 +208,7 @@ sub button_faster
 sub set_text
 {
 	my $word = get_next_word();
+	$word =~ s/@®/ /g;
 	my $timeout = 60000 / $wpm;
 	my $next_shot = $timeout;
 	my $word_length = length($word);
