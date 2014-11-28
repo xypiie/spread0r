@@ -83,3 +83,12 @@ by spread0r.  To do this, you've got two options:
 2. use the commandline tool "ebook-convert" of calibre installation
   * Open a terminal
   * run `ebook-convert input_ebook.epub output_ebook.txt`
+
+Converting PDFs
+=================
+
+Poppler
+-----------
+On Linux you can use `pdftotext` from [Poppler](http://poppler.freedesktop.org/):
+
+`$ pdftotext file.pdf`
