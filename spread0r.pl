@@ -220,17 +220,19 @@ sub set_text
 	$next_shot += $timeout / 2 if ($word =~ /.*,$/);
 	$next_shot += $timeout * 1.5 if ($word =~ /.*[\.!\?;]«?$/);
 
-	# search for vowel from start to the mid of the word,
-	# this will be the focuspoint of the word
-	for ($i = $word_length * 0.2; $i < $word_length / 2; ++$i) {
-		if (substr($word, $i, 1) =~ /[aeuioöäü]/i) {
-			$prev_vowel = $i;
-		}
+	# rule for finding the focuspoint
+	if ($word_length < 3) {
+		$prev_vowel = 0;
 	}
-
-	# if no vowel was found in the first half of the word,
-	# use the letter in the middle as focuspoint
-	$prev_vowel = $word_length / 2 if ($prev_vowel == -1);
+	elsif ($word_length >= 3 and $word_length < 7) {
+		$prev_vowel = 1;
+	}
+	elsif ($word_length >= 7 and $word_length < 11) {
+		$prev_vowel = 2;
+	}
+	else {
+		$prev_vowel = 3;
+	}
 
 	# fill the start of the word with spaces, to correctly
 	# align it
