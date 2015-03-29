@@ -25,6 +25,14 @@ use Pod::Usage;
 use lib 'lib/';
 use Hyphen;
 
+binmode( STDOUT, 'utf8:' );
+
+# get the local charset and decode the command line options
+use I18N::Langinfo qw(langinfo CODESET);
+my $codeset = langinfo(CODESET);
+use Encode qw(decode);
+@ARGV = map { decode $codeset, $_ } @ARGV;
+
 # defines
 my $font = "courier new 24";
 my $span_black_open = "<span background='white' foreground='black' font_desc='".$font."'><big>";
@@ -40,6 +48,7 @@ my $gtk_sentence_text;
 my $gtk_timer;
 
 # global variables
+my $vowels = "aeuioöäü";
 my $wpm = 200;
 my $pause_button;
 my $pause = 1;
@@ -223,7 +232,7 @@ sub set_text
 	# search for vowel from start to the mid of the word,
 	# this will be the focuspoint of the word
 	for ($i = $word_length * 0.2; $i < $word_length / 2; ++$i) {
-		if (substr($word, $i, 1) =~ /[aeuioöäü]/i) {
+		if (substr($word, $i, 1) =~ /[$vowels]/i) {
 			$prev_vowel = $i;
 		}
 	}
@@ -288,7 +297,8 @@ sub main
 			"fastforward|f=i" => \$fast_forward,
 			"version|v" => \$version,
 			"help|h" => \$help,
-			"man|m" => \$man)
+			"man|m" => \$man,
+                        "vowels=s" => \$vowels)
 		or die("Error in command line arguments\n");
 
 	if ($version) {
@@ -321,6 +331,7 @@ sub main
 	open(FILE, "<:encoding(UTF-8)", $file) || die "can't open UTF-8 encoded filename: $!";
 
 	printf("using words per minute = $wpm\n");
+        printf("using vowels = $vowels\n");
 
 	
 	# set up window and quit callbacks
@@ -420,7 +431,7 @@ spread0r [options] file
 	-m, --man			print the full documentation
 	-w <num>, --wpm <num>		reading speed in words per minute
 	-f <num>, --fastforward <num>	seek to <num>. sentence
-
+	--vowels <str>			use <str> as vowels (for non-english languages)
 
 =head1 OPTIONS
 
