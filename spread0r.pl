@@ -25,6 +25,14 @@ use Pod::Usage;
 use lib 'lib/';
 use Hyphen;
 
+binmode( STDOUT, 'utf8:' );
+
+# get the local charset and decode the command line options
+use I18N::Langinfo qw(langinfo CODESET);
+my $codeset = langinfo(CODESET);
+use Encode qw(decode);
+@ARGV = map { decode $codeset, $_ } @ARGV;
+
 # defines
 my $font = "courier new 24";
 my $span_black_open = "<span background='white' foreground='black' font_desc='".$font."'><big>";
@@ -40,7 +48,7 @@ my $gtk_sentence_text;
 my $gtk_timer;
 
 # global variables
-my $vowels = "aeuio";
+my $vowels = "aeuioöäü";
 my $wpm = 200;
 my $pause_button;
 my $pause = 1;
